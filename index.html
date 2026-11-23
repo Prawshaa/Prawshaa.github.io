@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DELAY BREAKER</title>
+<style>
+*{box-sizing:border-box} :root{--navy:#222d3c;--blue:#abd2eb;--pale:#e5f0f6;--muted:#71808f;--line:#c8d1d8}
+body{margin:0;min-height:100vh;font-family:Inter,"Segoe UI",Arial,sans-serif;color:var(--navy);background:linear-gradient(135deg,#fff 0 53%,#eef3f6 53%);overflow-x:hidden}
+.shape{position:fixed;z-index:-1;opacity:.9}.a{width:430px;height:650px;left:-210px;top:-130px;background:var(--pale);transform:rotate(18deg);clip-path:polygon(0 0,100% 0,58% 100%,0 78%)}.b{width:650px;height:300px;right:-200px;top:-90px;background:var(--blue);transform:rotate(12deg);clip-path:polygon(8% 0,100% 10%,80% 100%,0 75%)}
+main{width:min(1100px,92vw);margin:auto;min-height:calc(100vh - 50px)}header{height:78px;border-bottom:1px solid #d7dde1;display:flex;justify-content:space-between;align-items:center;letter-spacing:2px;font-size:13px}header span{letter-spacing:.5px;font-size:11px;color:var(--muted)}
+.screen{display:none;min-height:calc(100vh - 130px);padding:48px 8px}.active{display:block}.hero{max-width:880px;margin:45px auto}
+.eyebrow{font-size:10px;letter-spacing:2px;font-weight:800;color:var(--muted);margin:0 0 12px}h1{font-size:clamp(42px,6vw,74px);line-height:1;letter-spacing:-2px;font-weight:500;margin:0 0 20px}h1 em{font-style:normal;color:#55758c;font-weight:300}h2{font-size:40px;font-weight:500;letter-spacing:-1px;margin:0 0 18px}h3{margin:4px 0;font-size:20px}.intro{max-width:600px;color:var(--muted);line-height:1.6;font-size:15px;margin-bottom:30px}
+.card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:17px;padding:25px;box-shadow:0 18px 50px #22303c0d}label{display:block;font-size:11px;font-weight:800;letter-spacing:1.5px}input{width:100%;border:0;border-bottom:1px solid #aeb8c1;background:transparent;padding:14px 0;font-size:18px;outline:0;color:var(--navy)}input:focus-visible,summary:focus-visible,button:focus-visible{outline:2px solid #55758c;outline-offset:3px}.card .row{margin-top:20px}
+button{border:0;border-radius:999px;background:var(--navy);color:#fff;padding:13px 20px;font-weight:800;font-size:11px;letter-spacing:1px;cursor:pointer;margin:0 8px 8px 0}button:disabled{opacity:.5;cursor:default}.outline{background:transparent;color:var(--navy);border:1px solid #aeb8c1}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:16px}.facts div{padding:16px;border-left:2px solid var(--blue)}.facts b{display:block}.facts small{color:var(--muted)}
+.ai{margin-top:16px;border:1px dashed #aeb8c1;border-radius:14px;padding:14px 18px;background:rgba(255,255,255,.6)}.ai summary{cursor:pointer;font-size:12px;font-weight:800;letter-spacing:1px;display:flex;justify-content:space-between;gap:10px}.ai summary span{font-weight:500;letter-spacing:0;color:var(--muted)}.ai p{color:var(--muted);font-size:13px;line-height:1.5;margin:12px 0 4px}.ai a{color:#55758c}.ai input{font-size:15px;padding:10px 0;margin-bottom:6px}.ai .chk{display:flex;gap:8px;align-items:center;font-weight:500;letter-spacing:0;font-size:13px;color:var(--muted);margin:10px 0 14px}.ai .chk input{width:auto;margin:0}
+.note{max-width:850px;margin:0 0 14px;font-size:13px;color:#8a5a2b;line-height:1.5}.note:empty{display:none}
+.back{background:transparent;color:var(--muted);padding:0;margin:0 0 28px}.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:22px}.pill{border:1px solid var(--line);border-radius:99px;padding:9px 14px;color:var(--muted);font-size:11px}
+#steps{max-width:850px}.step{display:grid;grid-template-columns:45px 1fr auto;align-items:center;gap:14px;padding:17px 19px;margin:10px 0;background:#fffffff2;border:1px solid var(--line);border-radius:14px}.num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--pale);font-size:11px;font-weight:800}.step.done{opacity:.5}.step small{color:var(--muted)}.next{max-width:850px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:15px}
+.focus{text-align:center;max-width:720px;margin:25px auto}.focus #timer{font-size:100px;letter-spacing:-5px;font-weight:300;margin:20px 0}.focus p:not(.eyebrow){color:var(--muted)}.tip{background:var(--pale);border-radius:14px;padding:14px 18px;color:var(--navy)!important;max-width:520px;margin:18px auto;line-height:1.5}.tip:empty{display:none}.shield{display:flex;gap:12px;text-align:left;max-width:450px;margin:30px auto;padding:15px;border:1px dashed #aeb8c1;border-radius:14px}.shield small{display:block;color:var(--muted);margin-top:4px;line-height:1.4}
+.success{text-align:center;max-width:650px;margin:45px auto}.check{width:62px;height:62px;border-radius:50%;background:var(--pale);display:grid;place-items:center;margin:auto;font-size:27px}.success p{color:var(--muted)}.bar{height:8px;background:#dfe4e8;border-radius:9px;overflow:hidden;margin:25px 0 10px}.bar i{display:block;height:100%;width:0;background:#6f9dbb;transition:.4s}footer{text-align:center;color:#93a0aa;font-size:9px;letter-spacing:1px;padding:10px}
+@media(max-width:700px){header span{display:none}.hero{margin:20px auto}h1{font-size:43px}.facts{grid-template-columns:1fr}.head{align-items:start}.focus #timer{font-size:70px}.next{flex-direction:column;align-items:flex-start}.step{grid-template-columns:38px 1fr}.step small{display:none}}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+</style></head>
+<body>
+<div class="shape a"></div><div class="shape b"></div><main>
+<header><b>DELAY BREAKER</b><span>Start small. Keep going.</span></header>
+
+<section id="home" class="screen active">
+<div class="hero"><p class="eyebrow">YOUR NEXT STEP</p>
+<h1>You don't have to finish.<br><em>You only have to start.</em></h1>
+<p class="intro">Turn a big task into small, manageable actions and begin with just five minutes.</p>
+<div class="card"><label for="task">WHAT DO YOU NEED TO DO?</label>
+<input id="task" placeholder="e.g. Do 10 push-ups, or prepare a history presentation">
+<div class="row"><button id="break">BREAK IT DOWN →</button><button id="demo" class="outline">Try a demo</button></div></div>
+
+<details class="ai" id="aiBox"><summary>AI SETTINGS <span id="aiState">AI is off</span></summary>
+<p>Paste your DeepSeek API key so the AI can write steps and tips for your exact task. Get a key at <a href="https://platform.deepseek.com/api_keys" target="_blank" rel="noopener">platform.deepseek.com/api_keys</a>. The key is sent only to DeepSeek, never to anyone else.</p>
+<label for="key" style="margin-top:12px">DEEPSEEK API KEY</label>
+<input id="key" type="password" placeholder="sk-..." autocomplete="off" spellcheck="false">
+<label for="model">MODEL</label>
+<input id="model" value="deepseek-chat" autocomplete="off" spellcheck="false">
+<label class="chk"><input type="checkbox" id="remember"> Remember the key on this device</label>
+<button id="saveKey">SAVE</button><button id="clearKey" class="outline">Remove key</button>
+</details>
+
+<div class="facts"><div><b>5 MIN</b><small>focus sessions</small></div><div><b>SMALL</b><small>steps, not pressure</small></div><div><b>1 → 1</b><small>one next action</small></div></div>
+</div></section>
+
+<section id="breakdown" class="screen"><button class="back" data-go="home">← Back</button>
+<div class="head"><div><p class="eyebrow">BREAK IT DOWN</p><h2 id="taskTitle"></h2></div><div class="pill" id="count"></div></div>
+<p class="note" id="note" role="status"></p>
+<div id="steps"></div>
+<div class="card next"><div><p class="eyebrow">NEXT ACTION</p><h3 id="next"></h3><small id="time"></small></div><button id="focusBtn">START FOCUS →</button></div>
+</section>
+
+<section id="focusScreen" class="screen"><button class="back" data-go="breakdown">← Back to steps</button>
+<div class="focus"><p class="eyebrow">FOCUS MODE</p><div id="timer">05:00</div><h2 id="focusTask"></h2>
+<p>For the next five minutes, this is the only thing you need to do.</p>
+<p class="tip" id="tip"></p>
+<div><button id="pause" class="outline">PAUSE</button><button id="done">DONE ✓</button></div>
+<div class="shield">🔕 <span><b>Distraction Shield</b><small>Put your phone away and close social media for this session.</small></span></div>
+</div></section>
+
+<section id="progress" class="screen"><button class="back" data-go="breakdown">← Back</button>
+<div class="success"><div class="check">✓</div><p class="eyebrow">STEP COMPLETE</p><h2>Nice. You started.</h2>
+<p id="successText"></p><div class="bar"><i id="bar"></i></div><small id="successCount"></small><br><button id="nextBtn">NEXT STEP →</button></div>
+</section>
+</main><footer>DELAY BREAKER · Academic procrastination prototype</footer>
+
+<script>
+const $=id=>document.getElementById(id);
+let steps=[],timer=300,tid=null,current=-1;
+
+/* ---------- safe storage (works even if the browser blocks it) ---------- */
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){return null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){}},
+  del(k){try{localStorage.removeItem(k)}catch(e){}}
+};
+let apiKey=store.get("db_key")||"";
+
+/* ---------- offline fallback: steps by category [en, ru, minutes] ---------- */
+const SETS=[
+ {re:/отжим|присед|пресс|бег|тренир|зарядк|спорт|зал\b|растяжк|push|squat|run|workout|gym|exercise|plank/i,s:[
+  ["Put on comfortable clothes","Надень удобную одежду",1],
+  ["Find a free spot and warm up for a minute","Найди свободное место и разомнись минуту",2],
+  ["Do the first set, even a small one","Сделай первый подход, пусть небольшой",2],
+  ["Rest, then do one more set","Отдохни и сделай ещё один подход",3],
+  ["Write down what you did","Запиши, что получилось",1]]},
+ {re:/доклад|реферат|презентац|эссе|курсов|выучить|учить|экзамен|домашк|задани|урок|essay|presentation|homework|study|exam|report|paper/i,s:[
+  ["Open your notes or the task and read it once","Открой конспект или задание и прочитай один раз",2],
+  ["Write down 3 ideas, in any form","Запиши 3 идеи в любом виде",3],
+  ["Find 1–2 useful sources","Найди 1–2 полезных источника",5],
+  ["Write or make the first small part","Сделай первую небольшую часть",10],
+  ["Check what is left and plan the next session","Проверь, что осталось, и спланируй следующий подход",3]]},
+ {re:/убра|уборк|посуд|комнат|стирк|пыл|мусор|clean|tidy|dishes|laundry|room|trash/i,s:[
+  ["Take a bag or basket and a timer","Возьми пакет или корзину и поставь таймер",1],
+  ["Clear just one surface","Освободи только одну поверхность",5],
+  ["Put things where they belong","Разложи вещи по местам",5],
+  ["Throw away the trash","Выбрось мусор",2],
+  ["Look at the result and stop on a high note","Оцени результат и остановись на хорошем",1]]},
+ {re:/./,s:[
+  ["Get what you need ready","Подготовь всё, что нужно",2],
+  ["Do the very first small piece","Сделай самую первую маленькую часть",5],
+  ["Keep going for a few more minutes","Продолжай ещё несколько минут",5],
+  ["Check what is left","Проверь, что осталось",2],
+  ["Do one more part","Сделай ещё одну часть",5]]}
+];
+function fallbackSteps(task){
+  const ru=/[а-яё]/i.test(task);
+  const set=SETS.find(x=>x.re.test(task)).s;
+  return set.map(x=>({title:ru?x[1]:x[0],time:x[2]+(ru?" мин":" min"),tip:"",done:false}));
+}
+
+/* ---------- DeepSeek ---------- */
+async function askDeepSeek(task){
+  const model=($("model").value.trim()||"deepseek-chat");
+  const prompt=`You are a kind, practical coach for someone who procrastinates. Break this task into 4 to 6 small, concrete steps that fit THIS task exactly (no generic advice). The first step must be tiny and easy to start (1-2 minutes). For each step give: "title" (max 8 words, an action), "minutes" (integer 1-15), "tip" (one short, friendly, practical sentence). Write in the same language as the task. Reply with ONLY a JSON object like {"steps":[{"title":"...","minutes":2,"tip":"..."}]}.\nTask: ${JSON.stringify(task)}`;
+  const call=()=>fetch("https://api.deepseek.com/chat/completions",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","Authorization":"Bearer "+apiKey},
+    body:JSON.stringify({model,messages:[{role:"user",content:prompt}],response_format:{type:"json_object"},temperature:0.7,max_tokens:1200,stream:false})
+  });
+  let res,data;
+  for(let n=1;n<=4;n++){
+    res=await call();
+    data=await res.json().catch(()=>({}));
+    if(res.ok||![429,500,503].includes(res.status))break;
+    if(n<4){$("break").textContent=`BUSY, RETRYING (${n}/3)…`;await new Promise(r=>setTimeout(r,1500*n))}
+  }
+  if(!res.ok)throw new Error((data.error&&data.error.message)||("HTTP "+res.status));
+  const raw=(((data.choices||[])[0]||{}).message||{}).content||"";
+  const parsed=JSON.parse(raw.replace(/```json|```/g,"").trim());
+  const list=Array.isArray(parsed)?parsed:(parsed.steps||parsed.tasks||Object.values(parsed).find(Array.isArray));
+  if(!Array.isArray(list)||!list.length)throw new Error("Empty answer");
+  const ru=/[а-яё]/i.test(task);
+  return list.slice(0,6).map(x=>({
+    title:String(x.title||"").slice(0,120),
+    time:(parseInt(x.minutes)||5)+(ru?" мин":" min"),
+    tip:String(x.tip||"").slice(0,240),
+    done:false
+  })).filter(x=>x.title);
+}
+
+/* ---------- screens ---------- */
+function show(x){document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===x));scrollTo(0,0)}
+
+async function build(task){
+  const b=$("break"),d=$("demo");b.disabled=d.disabled=true;
+  let note="";
+  if(apiKey){
+    b.textContent="THINKING…";
+    try{steps=await askDeepSeek(task);if(!steps.length)throw new Error("No steps")}
+    catch(e){steps=fallbackSteps(task);note="The AI could not answer ("+e.message+"). Showing standard steps instead.";}
+  }else{
+    steps=fallbackSteps(task);
+    note="AI is off, so these are standard steps. Add a DeepSeek API key in AI settings for steps made for your exact task.";
+  }
+  b.disabled=d.disabled=false;b.textContent="BREAK IT DOWN →";
+  $("taskTitle").textContent=task;$("note").textContent=note;
+  render();show("breakdown");
+}
+
+function render(){
+  const box=$("steps");box.textContent="";
+  steps.forEach((s,i)=>{
+    const e=document.createElement("div");e.className="step"+(s.done?" done":"");
+    const n=document.createElement("div");n.className="num";n.textContent=s.done?"✓":i+1;
+    const t=document.createElement("div");t.textContent=s.title;
+    const m=document.createElement("small");m.textContent=s.time;
+    e.append(n,t,m);box.appendChild(e);
+  });
+  const d=steps.filter(x=>x.done).length,n=steps.find(x=>!x.done);
+  $("count").textContent=`${d} / ${steps.length}`;
+  $("next").textContent=n?n.title:"All steps complete";
+  $("time").textContent=n?n.time:"Great work";
+  $("focusBtn").disabled=!n;
+}
+
+/* ---------- timer ---------- */
+function paint(){$("timer").textContent=`${String(Math.floor(timer/60)).padStart(2,"0")}:${String(timer%60).padStart(2,"0")}`}
+function tick(){timer--;paint();if(timer<=0)finish()}
+function start(){clearInterval(tid);timer=300;paint();$("pause").textContent="PAUSE";tid=setInterval(tick,1000)}
+function finish(){
+  clearInterval(tid);tid=null;
+  const i=steps.findIndex(x=>!x.done);if(i<0)return;
+  steps[i].done=true;
+  const d=steps.filter(x=>x.done).length;
+  $("successText").textContent=`“${steps[i].title}” is complete.`;
+  $("successCount").textContent=`${d} / ${steps.length} completed`;
+  $("bar").style.width=(d/steps.length*100)+"%";
+  show("progress");
+}
+
+/* ---------- AI settings ---------- */
+function aiState(){
+  $("aiState").textContent=apiKey?"AI is on":"AI is off";
+}
+$("saveKey").onclick=()=>{
+  apiKey=$("key").value.trim();
+  if($("remember").checked&&apiKey)store.set("db_key",apiKey);else store.del("db_key");
+  store.set("db_model",$("model").value.trim());
+  aiState();
+  $("aiState").textContent=apiKey?"Saved. AI is on":"Paste a key first";
+};
+$("clearKey").onclick=()=>{apiKey="";$("key").value="";store.del("db_key");aiState()};
+if(apiKey){$("key").value=apiKey;$("remember").checked=true}
+const savedModel=store.get("db_model");if(savedModel&&!/^gemini/i.test(savedModel))$("model").value=savedModel;
+aiState();
+
+/* ---------- events ---------- */
+$("break").onclick=()=>build($("task").value.trim()||"Prepare your assignment");
+$("demo").onclick=()=>{$("task").value="Prepare a presentation about procrastination";build($("task").value)};
+$("focusBtn").onclick=()=>{
+  const n=steps.find(x=>!x.done);if(!n)return;
+  $("focusTask").textContent=n.title;$("tip").textContent=n.tip||"";
+  show("focusScreen");start();
+};
+$("done").onclick=finish;
+$("pause").onclick=()=>{
+  if(tid){clearInterval(tid);tid=null;$("pause").textContent="RESUME"}
+  else{$("pause").textContent="PAUSE";tid=setInterval(tick,1000)}
+};
+$("nextBtn").onclick=()=>{render();show("breakdown")};
+document.querySelectorAll("[data-go]").forEach(x=>x.onclick=()=>{if(x.dataset.go!=="focusScreen"){clearInterval(tid);tid=null}show(x.dataset.go)});
+$("task").addEventListener("keydown",e=>{if(e.key==="Enter")$("break").click()});
+render();
+</script></body></html>
