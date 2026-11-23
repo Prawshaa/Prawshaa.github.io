@@ -11,6 +11,8 @@ main{width:min(1100px,92vw);margin:auto;min-height:calc(100vh - 50px)}header{hei
 .card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:17px;padding:25px;box-shadow:0 18px 50px #22303c0d}label{display:block;font-size:11px;font-weight:800;letter-spacing:1.5px}input{width:100%;border:0;border-bottom:1px solid #aeb8c1;background:transparent;padding:14px 0;font-size:18px;outline:0;color:var(--navy)}input:focus-visible,summary:focus-visible,button:focus-visible{outline:2px solid #55758c;outline-offset:3px}.card .row{margin-top:20px}
 button{border:0;border-radius:999px;background:var(--navy);color:#fff;padding:13px 20px;font-weight:800;font-size:11px;letter-spacing:1px;cursor:pointer;margin:0 8px 8px 0}button:disabled{opacity:.5;cursor:default}.outline{background:transparent;color:var(--navy);border:1px solid #aeb8c1}.facts{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:16px}.facts div{padding:16px;border-left:2px solid var(--blue)}.facts b{display:block}.facts small{color:var(--muted)}
 .ai{margin-top:16px;border:1px dashed #aeb8c1;border-radius:14px;padding:14px 18px;background:rgba(255,255,255,.6)}.ai summary{cursor:pointer;font-size:12px;font-weight:800;letter-spacing:1px;display:flex;justify-content:space-between;gap:10px}.ai summary span{font-weight:500;letter-spacing:0;color:var(--muted)}.ai p{color:var(--muted);font-size:13px;line-height:1.5;margin:12px 0 4px}.ai a{color:#55758c}.ai input{font-size:15px;padding:10px 0;margin-bottom:6px}.ai .chk{display:flex;gap:8px;align-items:center;font-weight:500;letter-spacing:0;font-size:13px;color:var(--muted);margin:10px 0 14px}.ai .chk input{width:auto;margin:0}
+.share{display:flex;gap:22px;align-items:center;margin-top:16px;padding:18px 22px}.share .qr{flex:none;width:120px;height:120px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px;display:grid;place-items:center}.share .qr svg{width:100%;height:100%;display:block}.share .qr small{color:var(--muted);font-size:11px;text-align:center}.share>div:last-child{flex:1;min-width:0}.share input{font-size:15px}.share small{display:block;color:var(--muted);margin-top:8px;line-height:1.4}
+@media(max-width:700px){.share{flex-direction:column;align-items:flex-start}}
 .note{max-width:850px;margin:0 0 14px;font-size:13px;color:#8a5a2b;line-height:1.5}.note:empty{display:none}
 .back{background:transparent;color:var(--muted);padding:0;margin:0 0 28px}.head{display:flex;justify-content:space-between;align-items:end;margin-bottom:22px}.pill{border:1px solid var(--line);border-radius:99px;padding:9px 14px;color:var(--muted);font-size:11px}
 #steps{max-width:850px}.step{display:grid;grid-template-columns:45px 1fr auto;align-items:center;gap:14px;padding:17px 19px;margin:10px 0;background:#fffffff2;border:1px solid var(--line);border-radius:14px}.num{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;background:var(--pale);font-size:11px;font-weight:800}.step.done{opacity:.5}.step small{color:var(--muted)}.next{max-width:850px;margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:15px}
@@ -41,6 +43,8 @@ button{border:0;border-radius:999px;background:var(--navy);color:#fff;padding:13
 <button id="saveKey">SAVE</button><button id="clearKey" class="outline">Remove key</button>
 </details>
 
+<div class="card share"><div class="qr" id="qr"></div><div><label for="siteUrl">SHARE THE SITE</label><input id="siteUrl" type="url" placeholder="https://your-site.com" autocomplete="off" spellcheck="false"><small>Scan the code with a phone camera to open Delay Breaker. If this page is not online yet, paste your site link above.</small></div></div>
+
 <div class="facts"><div><b>5 MIN</b><small>focus sessions</small></div><div><b>SMALL</b><small>steps, not pressure</small></div><div><b>1 → 1</b><small>one next action</small></div></div>
 </div></section>
 
@@ -53,7 +57,7 @@ button{border:0;border-radius:999px;background:var(--navy);color:#fff;padding:13
 
 <section id="focusScreen" class="screen"><button class="back" data-go="breakdown">← Back to steps</button>
 <div class="focus"><p class="eyebrow">FOCUS MODE</p><div id="timer">05:00</div><h2 id="focusTask"></h2>
-<p>For the next five minutes, this is the only thing you need to do.</p>
+<p id="focusHint">For the next five minutes, this is the only thing you need to do.</p>
 <p class="tip" id="tip"></p>
 <div><button id="pause" class="outline">PAUSE</button><button id="done">DONE ✓</button></div>
 <div class="shield">🔕 <span><b>Distraction Shield</b><small>Put your phone away and close social media for this session.</small></span></div>
@@ -65,6 +69,7 @@ button{border:0;border-radius:999px;background:var(--navy);color:#fff;padding:13
 </section>
 </main><footer>DELAY BREAKER · Academic procrastination prototype</footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
 <script>
 const $=id=>document.getElementById(id);
 let steps=[],timer=300,tid=null,current=-1;
@@ -178,7 +183,7 @@ function render(){
 /* ---------- timer ---------- */
 function paint(){$("timer").textContent=`${String(Math.floor(timer/60)).padStart(2,"0")}:${String(timer%60).padStart(2,"0")}`}
 function tick(){timer--;paint();if(timer<=0)finish()}
-function start(){clearInterval(tid);timer=300;paint();$("pause").textContent="PAUSE";tid=setInterval(tick,1000)}
+function start(min){clearInterval(tid);timer=Math.max(1,Math.min(60,min||5))*60;paint();$("pause").textContent="PAUSE";tid=setInterval(tick,1000)}
 function finish(){
   clearInterval(tid);tid=null;
   const i=steps.findIndex(x=>!x.done);if(i<0)return;
@@ -206,13 +211,33 @@ if(apiKey){$("key").value=apiKey;$("remember").checked=true}
 const savedModel=store.get("db_model");if(savedModel&&!/^gemini/i.test(savedModel))$("model").value=savedModel;
 aiState();
 
+/* ---------- QR code ---------- */
+function drawQR(){
+  const box=$("qr"),url=$("siteUrl").value.trim();box.textContent="";
+  const msg=t=>{const m=document.createElement("small");m.textContent=t;box.appendChild(m)};
+  if(!/^https?:\/\/\S+$/i.test(url))return msg("Add a link");
+  if(typeof qrcode==="undefined")return msg("QR unavailable offline");
+  try{
+    const q=qrcode(0,"M");q.addData(url);q.make();
+    const n=q.getModuleCount();let d="";
+    for(let r=0;r<n;r++)for(let c=0;c<n;c++)if(q.isDark(r,c))d+=`M${c},${r}h1v1h-1z`;
+    box.innerHTML=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2 -2 ${n+4} ${n+4}" shape-rendering="crispEdges" role="img" aria-label="QR code with the site link"><rect x="-2" y="-2" width="${n+4}" height="${n+4}" fill="#fff"/><path d="${d}" fill="#222f3b"/></svg>`;
+  }catch(e){msg("Link is too long")}
+}
+const savedUrl=store.get("db_url");
+$("siteUrl").value=savedUrl||"https://prawshaa.github.io/";
+$("siteUrl").addEventListener("input",()=>{store.set("db_url",$("siteUrl").value.trim());drawQR()});
+drawQR();
+
 /* ---------- events ---------- */
 $("break").onclick=()=>build($("task").value.trim()||"Prepare your assignment");
 $("demo").onclick=()=>{$("task").value="Prepare a presentation about procrastination";build($("task").value)};
 $("focusBtn").onclick=()=>{
   const n=steps.find(x=>!x.done);if(!n)return;
   $("focusTask").textContent=n.title;$("tip").textContent=n.tip||"";
-  show("focusScreen");start();
+  const mins=Math.max(1,Math.min(60,parseInt(n.time)||5));
+  $("focusHint").textContent=`For the next ${mins===1?"minute":mins+" minutes"}, this is the only thing you need to do.`;
+  show("focusScreen");start(mins);
 };
 $("done").onclick=finish;
 $("pause").onclick=()=>{
